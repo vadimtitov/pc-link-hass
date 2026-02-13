@@ -20,10 +20,15 @@
           "turn_off_action": "Action to perform when the switch is turned off",
           "scan_interval": "How often to poll the PC status (minimum 5 seconds)"
         }
+      },
+      "wake": {
+        "title": "PC appears to be off",
+        "description": "Could not reach pc-link at the provided address. A Wake-on-LAN magic packet has been sent to your PC. Please wait for it to boot, unlock it to make sure pc-link is running, then click **Confirm** to retry the connection check."
       }
     },
     "error": {
       "cannot_connect": "Unable to connect to pc-link. Check the host, port, and that pc-link is running.",
+      "still_cannot_connect": "Still unable to reach pc-link. Make sure the PC is on, unlocked, and pc-link is running, then try again.",
       "invalid_auth": "Invalid authentication token.",
       "unknown": "An unexpected error occurred."
     },

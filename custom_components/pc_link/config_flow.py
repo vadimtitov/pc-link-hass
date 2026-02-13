@@ -8,6 +8,7 @@ from typing import Any
 
 import aiohttp
 import voluptuous as vol
+import wakeonlan
 from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
@@ -40,6 +41,10 @@ class PCLinkConfigFlow(ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
+    def __init__(self) -> None:
+        """Initialize the config flow."""
+        self._user_input: dict[str, Any] = {}
+
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
@@ -59,13 +64,18 @@ class PCLinkConfigFlow(ConfigFlow, domain=DOMAIN):
                 user_input[CONF_PORT],
                 user_input[CONF_TOKEN],
             )
-            if error:
-                errors["base"] = error
-            else:
+            if error is None:
                 return self.async_create_entry(
                     title=f"PC Link ({user_input[CONF_HOST]})",
                     data=user_input,
                 )
+
+            if error == "invalid_auth":
+                errors["base"] = error
+            else:
+                # PC might be off — offer to send WoL
+                self._user_input = user_input
+                return await self.async_step_wake()
 
         return self.async_show_form(
             step_id="user",
@@ -83,6 +93,42 @@ class PCLinkConfigFlow(ConfigFlow, domain=DOMAIN):
                     ): vol.All(int, vol.Range(min=MIN_SCAN_INTERVAL)),
                 }
             ),
+            errors=errors,
+        )
+
+    async def async_step_wake(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Send WoL and wait for user to confirm PC is ready."""
+        errors: dict[str, str] = {}
+
+        if user_input is not None:
+            # User clicked confirm — retry the health check
+            error = await self._test_connection(
+                self._user_input[CONF_HOST],
+                self._user_input[CONF_PORT],
+                self._user_input[CONF_TOKEN],
+            )
+            if error is None:
+                return self.async_create_entry(
+                    title=f"PC Link ({self._user_input[CONF_HOST]})",
+                    data=self._user_input,
+                )
+            if error == "invalid_auth":
+                errors["base"] = error
+            else:
+                errors["base"] = "still_cannot_connect"
+        else:
+            # First time entering this step — send WoL
+            mac = self._user_input[CONF_MAC_ADDRESS]
+            _LOGGER.debug("Sending WoL magic packet to %s during setup", mac)
+            await self.hass.async_add_executor_job(
+                wakeonlan.send_magic_packet, mac
+            )
+
+        return self.async_show_form(
+            step_id="wake",
+            data_schema=vol.Schema({}),
             errors=errors,
         )
 
