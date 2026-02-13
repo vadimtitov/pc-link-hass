@@ -50,3 +50,8 @@ The integration validates connectivity during setup by querying the `/api/health
 After setup, you can change the **turn-off action** and **polling interval** from the integration's options page:
 
 **Settings > Devices & Services > PC Link > Configure**
+
+## Caveats
+
+- **Wake-on-LAN** requires the PC to be on the same LAN subnet as Home Assistant, and the network adapter and router/switch must support WoL. It will not work across VLANs or subnets without additional configuration (directed broadcast or WoL relay).
+- When the PC is off, the health endpoint is unreachable — the switch state will show as **off**. This is expected behavior.
