@@ -1,0 +1,30 @@
+"""Constants for the PC Link integration."""
+
+DOMAIN = "pc_link"
+
+CONF_MAC_ADDRESS = "mac_address"
+CONF_TURN_OFF_ACTION = "turn_off_action"
+CONF_SCAN_INTERVAL = "scan_interval"
+
+DEFAULT_PORT = 8990
+DEFAULT_SCAN_INTERVAL = 30
+MIN_SCAN_INTERVAL = 5
+
+TURN_OFF_SLEEP = "sleep"
+TURN_OFF_HIBERNATE = "hibernate"
+TURN_OFF_SHUTDOWN = "shutdown"
+
+TURN_OFF_ACTIONS = [TURN_OFF_SLEEP, TURN_OFF_HIBERNATE, TURN_OFF_SHUTDOWN]
+
+API_HEALTH = "/api/health"
+API_SLEEP = "/api/sleep"
+API_HIBERNATE = "/api/hibernate"
+API_SHUTDOWN = "/api/shutdown"
+
+TURN_OFF_ACTION_ENDPOINTS = {
+    TURN_OFF_SLEEP: API_SLEEP,
+    TURN_OFF_HIBERNATE: API_HIBERNATE,
+    TURN_OFF_SHUTDOWN: API_SHUTDOWN,
+}
+
+REQUEST_TIMEOUT = 5

@@ -1,0 +1,45 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to PC Link",
+        "description": "Set up a connection to a PC running pc-link.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "token": "API Token",
+          "mac_address": "MAC Address",
+          "turn_off_action": "Turn-off action",
+          "scan_interval": "Polling interval (seconds)"
+        },
+        "data_description": {
+          "host": "IP address of the PC running pc-link",
+          "port": "Port that pc-link listens on",
+          "token": "Bearer token for API authentication",
+          "mac_address": "MAC address of the PC's network adapter (for Wake-on-LAN)",
+          "turn_off_action": "Action to perform when the switch is turned off",
+          "scan_interval": "How often to poll the PC status (minimum 5 seconds)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to pc-link. Check the host, port, and that pc-link is running.",
+      "invalid_auth": "Invalid authentication token.",
+      "unknown": "An unexpected error occurred."
+    },
+    "abort": {
+      "already_configured": "This PC is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "PC Link Options",
+        "data": {
+          "turn_off_action": "Turn-off action",
+          "scan_interval": "Polling interval (seconds)"
+        }
+      }
+    }
+  }
+}
